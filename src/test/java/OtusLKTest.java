@@ -1,4 +1,6 @@
+import components.ModalWindowAuthComponent;
 import data.ContactInfo;
+import data.LevelEnglish;
 import exceptions.BrowserNotSupported;
 import factory.WebDriverFactory;
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -25,9 +27,9 @@ public class OtusLKTest {
 
     private final Logger logger = LogManager.getLogger();
 
-    Properties p = new Properties(System.getProperties());
+    private final Properties prop = new Properties(System.getProperties());
 
-    String base_url = p.getProperty("base.url");
+    private final String base_url = prop.getProperty("base.url");
 
     @BeforeClass
         public static void startDriver(){
@@ -52,46 +54,45 @@ public class OtusLKTest {
     public void otusLKTest() {
 
         startDriver();
-        driver = new ChromeDriver();
         driver.manage().window().maximize();
 
-        MainPage mp = new MainPage(driver);
-        mp.open("/");
+        MainPage mainPage = new MainPage(driver);
+        mainPage.open("/");
 
-        mp.clickRegButton();
+        mainPage.clickRegButton();
 
-        getElement(mp.modalWindowLocator);
+        ModalWindowAuthComponent modalWindowAuthComponent = new ModalWindowAuthComponent(driver);
 
-        mp.setEmailAndPassword();
+        getElement(modalWindowAuthComponent.modalWindowLocator);
 
-        mp.clickSubmit();
+        modalWindowAuthComponent.setEmailAndPassword();
 
-        getElement(By.xpath(mp.menuXpathLocator));
+        modalWindowAuthComponent.clickSubmit();
 
-        AboutMyselfPage amp = new AboutMyselfPage(driver);
+        getElement(By.xpath(modalWindowAuthComponent.menuXpathLocator));
 
-        amp.actionsMoveToElement();
+        AboutMyselfPage aboutMyselfPage = new AboutMyselfPage(driver);
 
-        amp.setFirstName();
+        aboutMyselfPage.actionsMoveToElement();
 
-        amp.setLastName();
+        aboutMyselfPage.setFirstName();
 
-        amp.setBlogName();
+        aboutMyselfPage.setLastName();
 
-        amp.setDateOfBirth(LocalDate.now());
+        aboutMyselfPage.setBlogName();
 
-        amp.setCountryName();
+        aboutMyselfPage.setDateOfBirth(LocalDate.now());
 
-        amp.setCityName();
+        aboutMyselfPage.setCountryName("RUSSIA");
 
-        amp.setEnglishLevel();
+        aboutMyselfPage.setEnglishLevel(LevelEnglish.BEGINNER);
 
-        amp.clearOldContact();
+        aboutMyselfPage.clearOldContact();
 
-        amp.setContact(ContactInfo.WHATSAPP.toString().toLowerCase(),"7-777-00000000");
-        amp.setContact(ContactInfo.TELEGRAM.toString().toLowerCase(),"8-888-11111111");
+        aboutMyselfPage.setContact(ContactInfo.WHATSAPP.toString().toLowerCase(),"7-777-00000000");
+        aboutMyselfPage.setContact(ContactInfo.TELEGRAM.toString().toLowerCase(),"8-888-11111111");
 
-        amp.clickButtonSave();
+        aboutMyselfPage.clickButtonSave();
 
         driver.close();
 
@@ -99,33 +100,35 @@ public class OtusLKTest {
         driver.manage().window().maximize();
         driver.get(base_url);
 
-        mp = new MainPage(driver);
+        mainPage = new MainPage(driver);
 
-        mp.clickRegButton();
+        mainPage.clickRegButton();
 
-        getElement(mp.modalWindowLocator);
+        getElement(modalWindowAuthComponent.modalWindowLocator);
 
-        mp.setEmailAndPassword();
+        modalWindowAuthComponent = new ModalWindowAuthComponent(driver);
 
-        mp.clickSubmit();
+        modalWindowAuthComponent.setEmailAndPassword();
 
-        getElement(By.xpath(amp.menuXpathLocator));
+        modalWindowAuthComponent.clickSubmit();
 
-        amp = new AboutMyselfPage(driver);
+        getElement(By.xpath(aboutMyselfPage.menuXpathLocator));
 
-        amp.actionsMoveToElement();
+        aboutMyselfPage = new AboutMyselfPage(driver);
 
-        amp.assertFactName();
+        aboutMyselfPage.actionsMoveToElement();
 
-        amp.assertFactNameLatin();
+        aboutMyselfPage.assertFactName();
 
-        amp.assertFactLastName();
+        aboutMyselfPage.assertFactNameLatin();
 
-        amp.assertFactLastNameLatin();
+        aboutMyselfPage.assertFactLastName();
 
-        amp.assertFactNameBlog();
+        aboutMyselfPage.assertFactLastNameLatin();
 
-        amp.assertFactBD();
+        aboutMyselfPage.assertFactNameBlog();
+
+        aboutMyselfPage.assertFactBD();
 
         }
 

@@ -1,5 +1,7 @@
 package pages;
 
+import data.CountryCity;
+import data.LevelEnglish;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -68,26 +70,35 @@ public class AboutMyselfPage extends AbsBasePage{
         return new AboutMyselfPage(driver);
     }
 
-    public AboutMyselfPage setCountryName(){
-        driver.findElement(By.xpath("//div[@data-slave-selector]/label/div")).click();
-        driver.findElement(By.xpath("//button[contains(text(),'Россия')]")).click();
-        return new AboutMyselfPage(driver);
-    }
+    public AboutMyselfPage setCountryName(String countryName){
 
-    public AboutMyselfPage setCityName(){
+        //Тут задаем страну по умолчанию - Россия
+        CountryCity country = CountryCity.RUSSIA;
+
+        for (CountryCity cc : CountryCity.values()) {
+            if(countryName.toUpperCase().equals(cc.toString())){
+                country = cc;
+            }
+        }
+
+        driver.findElement(By.xpath("//div[@data-slave-selector]/label/div")).click();
+        driver.findElement(By.xpath("//button[contains(text(),'" + country.getCountry() + "')]")).click();
+
         JavascriptExecutor jse = (JavascriptExecutor) driver;
         WebElement city = driver.findElement(By.xpath("//input[@data-title='Город']"));
         jse.executeScript("arguments[0].removeAttribute('disabled')", city);
         driver.findElement(By.xpath("//div[contains(@class,'js-lk-cv-dependent-slave-city')]/label/div")).click();
         getElement(By.xpath("//div[contains(@class,'js-lk-cv-dependent-slave-city')]/label/div"));
-        getClckableElement(By.xpath("//button[contains(text(),'Москва')]"));
-        driver.findElement(By.xpath("//button[contains(text(),'Москва')]")).click();
+
+        getClckableElement(By.xpath("//button[contains(text(),'" + country.getCity() + "')]"));
+        driver.findElement(By.xpath("//button[contains(text(),'" + country.getCity() + "')]")).click();
+
         return new AboutMyselfPage(driver);
     }
 
-    public AboutMyselfPage setEnglishLevel(){
+    public AboutMyselfPage setEnglishLevel(LevelEnglish levelEnglish){
         driver.findElement(By.xpath("//input[@name='english_level']/following::div[1]")).click();
-        driver.findElement(By.xpath("//button[contains(text(),'Начальный уровень (Beginner)')]")).click();
+        driver.findElement(By.xpath("//button[contains(text(),'" + levelEnglish.getLevelEnglish() + "')]")).click();
         return new AboutMyselfPage(driver);
     }
 

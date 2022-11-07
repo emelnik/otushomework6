@@ -21,47 +21,48 @@ public class WebDriverFactory {
 
     public WebDriver getDriver(MutableCapabilities options) throws BrowserNotSupported {
 
-        DriverData browser = DriverData.NONE;
+        DriverData browser;
 
-        for (DriverData data:DriverData.values()) {
+        for (DriverData data: DriverData.values()) {
             if (browserName.toUpperCase().equals(data.toString())){
                 browser = data;
+                switch (browser){
+                    case CHROME:
+                        ChromeOptions chromeOptions = new ChromeOptions();
+                        if(options != null){
+                            chromeOptions.merge(options);
+                        }
+                        return new ChromeDriver(chromeOptions);
+                    case FIREFOX:
+                        FirefoxOptions firefoxOptions = new FirefoxOptions();
+                        if(options != null){
+                            firefoxOptions.merge(options);
+                        }
+                        return new FirefoxDriver(firefoxOptions);
+                    case EDGE:
+                        EdgeOptions edgeOptions = new EdgeOptions();
+                        if(options != null){
+                            edgeOptions.merge(options);
+                        }
+                        return new EdgeDriver(edgeOptions);
+                    case OPERA:
+                        OperaOptions operaOptions = new OperaOptions();
+                        if(options != null){
+                            operaOptions.merge(options);
+                        }
+                        return new OperaDriver(operaOptions);
+                    case SAFARI:
+                        SafariOptions safariOptions = new SafariOptions();
+                        if(options != null){
+                            safariOptions.merge(options);
+                        }
+                        return new SafariDriver(safariOptions);
+                    default:
+                        throw new BrowserNotSupported(browser);
+                }
             }
         }
-
-        switch (browser){
-            case CHROME:
-                ChromeOptions chromeOptions = new ChromeOptions();
-                if(options != null){
-                    chromeOptions.merge(options);
-                }
-                return new ChromeDriver(chromeOptions);
-            case FIREFOX:
-                FirefoxOptions firefoxOptions = new FirefoxOptions();
-                if(options != null){
-                    firefoxOptions.merge(options);
-                }
-                return new FirefoxDriver(firefoxOptions);
-            case EDGE:
-                EdgeOptions edgeOptions = new EdgeOptions();
-                if(options != null){
-                    edgeOptions.merge(options);
-                }
-                return new EdgeDriver(edgeOptions);
-            case OPERA:
-                OperaOptions operaOptions = new OperaOptions();
-                if(options != null){
-                    operaOptions.merge(options);
-                }
-                return new OperaDriver(operaOptions);
-            case SAFARI:
-                SafariOptions safariOptions = new SafariOptions();
-                if(options != null){
-                    safariOptions.merge(options);
-                }
-                return new SafariDriver(safariOptions);
-            default:
-                throw new BrowserNotSupported(browser);
-        }
+        return null;
     }
+
 }

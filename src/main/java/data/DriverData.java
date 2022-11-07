@@ -6,7 +6,6 @@ public enum DriverData {
     FIREFOX,
     EDGE,
     OPERA,
-    SAFARI,
-    NONE
+    SAFARI
 
 }
