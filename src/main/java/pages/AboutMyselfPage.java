@@ -4,10 +4,12 @@ import data.CountryCity;
 import data.LevelEnglish;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.junit.Assert;
 
+import java.text.ParseException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -29,39 +31,47 @@ public class AboutMyselfPage extends AbsBasePage{
                 .click()
                 .build()
                 .perform();
-        getElement(aboutMyselfLocator);
+//        getElement(aboutMyselfLocator);
+        waitUntil(ExpectedConditions.visibilityOfElementLocated(aboutMyselfLocator));
         return new AboutMyselfPage(driver);
     }
 
-    public AboutMyselfPage setFirstName(){
+    public AboutMyselfPage setFirstNameRus(String firstNameRus){
         WebElement elementInputFirstNameRus = driver.findElement(By.xpath("//input[@name='fname']"));
-        WebElement elementInputFirstNameLatin = driver.findElement(By.xpath("//input[@name='fname_latin']"));
         elementInputFirstNameRus.clear();
-        elementInputFirstNameRus.sendKeys("иван");
+        elementInputFirstNameRus.sendKeys(firstNameRus);
+        return new AboutMyselfPage(driver);
+    }
+
+    public AboutMyselfPage setFirstNameLatin(String firstNameLatin){
+        WebElement elementInputFirstNameLatin = driver.findElement(By.xpath("//input[@name='fname_latin']"));
         elementInputFirstNameLatin.clear();
-        elementInputFirstNameLatin.sendKeys("ivan");
+        elementInputFirstNameLatin.sendKeys(firstNameLatin);
         return new AboutMyselfPage(driver);
     }
 
-    public AboutMyselfPage setLastName(){
+    public AboutMyselfPage setLastNameRus(String lastNameRus){
         WebElement elementInputLastNameRus = driver.findElement(By.xpath("//input[@name='lname']"));
-        WebElement elementInputLastNameLatin = driver.findElement(By.xpath("//input[@name='lname_latin']"));
         elementInputLastNameRus.clear();
-        elementInputLastNameRus.sendKeys("иванов");
-        elementInputLastNameLatin.clear();
-        elementInputLastNameLatin.sendKeys("ivanov");
+        elementInputLastNameRus.sendKeys(lastNameRus);
         return new AboutMyselfPage(driver);
     }
 
-    public AboutMyselfPage setBlogName(){
+    public AboutMyselfPage setLastNameLatin(String lastNameLatin){
+        WebElement elementInputLastNameLatin = driver.findElement(By.xpath("//input[@name='lname_latin']"));
+        elementInputLastNameLatin.clear();
+        elementInputLastNameLatin.sendKeys(lastNameLatin);
+        return new AboutMyselfPage(driver);
+    }
+
+    public AboutMyselfPage setBlogName(String blogName){
         WebElement elementBlogName = driver.findElement(By.xpath("//input[@name='blog_name']"));
         elementBlogName.clear();
-        elementBlogName.sendKeys("ivanec");
+        elementBlogName.sendKeys(blogName);
         return new AboutMyselfPage(driver);
     }
 
     public AboutMyselfPage setDateOfBirth(LocalDate dateOfBirth){
-        dateOfBirth = dateOfBirth.minusYears(18);
         WebElement elementDateOfBirth = driver.findElement(By.xpath("//input[@name='date_of_birth']"));
         elementDateOfBirth.clear();
         elementDateOfBirth.click();
@@ -88,9 +98,9 @@ public class AboutMyselfPage extends AbsBasePage{
         WebElement city = driver.findElement(By.xpath("//input[@data-title='Город']"));
         jse.executeScript("arguments[0].removeAttribute('disabled')", city);
         driver.findElement(By.xpath("//div[contains(@class,'js-lk-cv-dependent-slave-city')]/label/div")).click();
-        getElement(By.xpath("//div[contains(@class,'js-lk-cv-dependent-slave-city')]/label/div"));
+        waitUntil(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(@class,'js-lk-cv-dependent-slave-city')]/label/div")));
 
-        getClckableElement(By.xpath("//button[contains(text(),'" + country.getCity() + "')]"));
+        waitUntil(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(),'" + country.getCity() + "')]")));
         driver.findElement(By.xpath("//button[contains(text(),'" + country.getCity() + "')]")).click();
 
         return new AboutMyselfPage(driver);
@@ -119,7 +129,7 @@ public class AboutMyselfPage extends AbsBasePage{
                 .click();
         driver.findElement(By.xpath("//span[contains(text(),'Способ связи')]"))
                 .click();
-        getClckableElement(By.xpath("(//button[@data-value=\"" + contactType + "\"])[last()]"));
+        waitUntil(ExpectedConditions.elementToBeClickable(By.xpath("(//button[@data-value=\"" + contactType + "\"])[last()]")));
         driver.findElement(By.xpath("(//button[@data-value=\"" + contactType + "\"])[last()]"))
                 .click();
         WebElement elementContact = driver
@@ -164,18 +174,13 @@ public class AboutMyselfPage extends AbsBasePage{
         Assert.assertEquals("ivanec",factNameBlog);
     }
 
-    public void assertFactBD(){
+    public void assertFactBD() throws ParseException {
         String factBD = driver.findElement(By.xpath("//input[@name='date_of_birth']")).getAttribute("value");
-        Assert.assertEquals(LocalDate.now().minusYears(18).format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),factBD);
+        Assert.assertEquals(LocalDate.of(1990,10,11).format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),factBD);
     }
 
-    private WebElement getElement(By locator){
+    private void waitUntil(ExpectedCondition<?> expectedCondition){
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
-    }
-
-    private WebElement getClckableElement(By locator){
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        return wait.until(ExpectedConditions.elementToBeClickable(locator));
+        wait.until(expectedCondition);
     }
 }

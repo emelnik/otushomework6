@@ -15,6 +15,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.text.ParseException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Properties;
@@ -51,7 +52,7 @@ public class OtusLKTest {
     }
 
     @Test
-    public void otusLKTest() {
+    public void otusLKTest() throws ParseException {
 
         startDriver();
         driver.manage().window().maximize();
@@ -73,26 +74,20 @@ public class OtusLKTest {
 
         AboutMyselfPage aboutMyselfPage = new AboutMyselfPage(driver);
 
-        aboutMyselfPage.actionsMoveToElement();
-
-        aboutMyselfPage.setFirstName();
-
-        aboutMyselfPage.setLastName();
-
-        aboutMyselfPage.setBlogName();
-
-        aboutMyselfPage.setDateOfBirth(LocalDate.now());
-
-        aboutMyselfPage.setCountryName("RUSSIA");
-
-        aboutMyselfPage.setEnglishLevel(LevelEnglish.BEGINNER);
-
-        aboutMyselfPage.clearOldContact();
-
-        aboutMyselfPage.setContact(ContactInfo.WHATSAPP.toString().toLowerCase(),"7-777-00000000");
-        aboutMyselfPage.setContact(ContactInfo.TELEGRAM.toString().toLowerCase(),"8-888-11111111");
-
-        aboutMyselfPage.clickButtonSave();
+        aboutMyselfPage
+                .actionsMoveToElement()
+                .setFirstNameRus("иван")
+                .setFirstNameLatin("ivan")
+                .setLastNameRus("иванов")
+                .setLastNameLatin("ivanov")
+                .setBlogName("ivanec")
+                .setDateOfBirth(LocalDate.of(1990,10,11))
+                .setCountryName("RUSSIA")
+                .setEnglishLevel(LevelEnglish.BEGINNER)
+                .clearOldContact()
+                .setContact(ContactInfo.WHATSAPP.toString().toLowerCase(),"7-777-00000000")
+                .setContact(ContactInfo.TELEGRAM.toString().toLowerCase(),"8-888-11111111")
+                .clickButtonSave();
 
         driver.close();
 
@@ -116,15 +111,12 @@ public class OtusLKTest {
 
         aboutMyselfPage = new AboutMyselfPage(driver);
 
-        aboutMyselfPage.actionsMoveToElement();
-
-        aboutMyselfPage.assertFactName();
-
-        aboutMyselfPage.assertFactNameLatin();
-
-        aboutMyselfPage.assertFactLastName();
-
-        aboutMyselfPage.assertFactLastNameLatin();
+        aboutMyselfPage
+                .actionsMoveToElement()
+                .assertFactName()
+                .assertFactNameLatin()
+                .assertFactLastName()
+                .assertFactLastNameLatin();
 
         aboutMyselfPage.assertFactNameBlog();
 
